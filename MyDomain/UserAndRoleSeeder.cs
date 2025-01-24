@@ -45,7 +45,6 @@ namespace MyDomain
                     Email = "Boerderij@localhost.nl",
                     Name = "Admin Name",
                     Address = "Admin Address"
-                    //CustomerCard = "AdminCard123"
                 };
                 //Password
                 IdentityResult result = userManager.CreateAsync(user, "Boerderij123!").Result;
