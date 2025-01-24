@@ -1,6 +1,6 @@
 ﻿using BeestjeFeestje.Models;
 using BeestjeFeestje.Services;
-using DbAccess;
+using BeestjeFeestje.DbAccess;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
@@ -13,7 +13,6 @@ using MyDomain;
 using MyDomain.Guest;
 using Moq;
 using TestProject.MoqTests;
-using System.Data.Entity.Infrastructure;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 using System.Net.Sockets;
 using System.Reflection.Metadata;
