@@ -1,0 +1,82 @@
+﻿@using Newtonsoft.Json
+@using MyDomain
+
+@model BookingViewModel
+
+@{
+    ViewData["Title"] = "Booking Confirmation";
+    int TotalPrice = 0;
+}
+
+<div class="container mt-4">
+    <div class="row mb-4">
+        <div class="col">
+            <nav>
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item">Beestjes</li>
+                    <li class="breadcrumb-item">Gegevens</li>
+                    <li class="breadcrumb-item active">Bevestig</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card">
+                <div class="card-body">
+                    <form asp-action="AddBooking" method="post">
+                        <h5 class="card-title">Contact gegevens:</h5>
+                        <p>@Model.Guest.Name</p>
+                        <p>@Model.Guest.Address</p>
+                        <p>@Model.Guest.Email</p>
+                        <p>@Model.Guest.PhoneNumber</p>
+
+                        <h5 class="card-title mt-4">Prijs / Korting:</h5>
+                        <ul class="list-unstyled">
+                            @foreach (var animal in Model.Animals)
+                            {
+                                TotalPrice += animal.Price;
+                                <li>
+                                    @animal.Name:
+                                    <span> €@animal.Price</span>
+                                </li>
+                            }
+                        </ul>
+                        @{
+                            var discount = (TotalPrice * Model.Discount) / 100;
+                            var newTotalPrice = TotalPrice - discount;
+                        }
+                        <p><strong>Korting</strong> €@discount</p>
+                        <p><strong>Totaal:</strong> €@newTotalPrice</p>
+                        <input asp-for="@Model.Guest.Name" class="form-control" hidden />
+                        <input asp-for="@Model.Guest.Email" class="form-control" hidden />
+                        <input asp-for="@Model.Guest.Address" class="form-control" hidden />
+                        <input asp-for="@Model.Guest.PhoneNumber" class="form-control" hidden />
+                        <input type="hidden" name="Animals" value='@Html.Raw(JsonConvert.SerializeObject(Model.Animals))' />
+                        <input type="hidden" name="SelectedDate" value="@Model.SelectedDate.ToString("yyyy-MM-dd")" />
+                        <button type="submit" class="btn btn-success w-100 mt-3">Boeking bevestigen</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="card">
+                <div class="card-body">
+                    <p><strong>Datum:</strong> @Model.SelectedDate</p>
+
+                    <h6>Beestjes</h6>
+                    <ul class="list-group mb-3">
+                        @foreach (var animal in Model.Animals)
+                        {
+                            <li class="list-group-item d-flex align-items-center">
+                                <img src="@animal.Image" alt="@animal.Name" class="img-thumbnail me-2" style="width: 30px; height: 30px;" />
+                                <span>@animal.Name</span>
+                            </li>
+                        }
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

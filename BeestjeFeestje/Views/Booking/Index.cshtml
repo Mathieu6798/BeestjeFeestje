@@ -1,0 +1,100 @@
+﻿@model BookingViewModel
+
+@{
+    ViewData["Title"] = "Boek een beestje";
+}
+
+<div class="container mt-4">
+    <div class="row mb-4">
+        <div class="col">
+            <nav>
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item active">Beestjes</li>
+                    <li class="breadcrumb-item">Gegevens</li>
+                    <li class="breadcrumb-item">Bevestig</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h4>Kies je beestjes</h4>
+                </div>
+                <div class="card-body">
+                    @if (TempData["ErrorMessage"] != null)
+                    {
+                        <div class="alert alert-danger text-center" role="alert">
+                            @TempData["ErrorMessage"]
+                        </div>
+                    }
+
+                    <form method="post">
+                        <div class="mb-3">
+                            <label for="selectedDate" class="form-label">Selecteer een datum:</label>
+                            <input type="date" id="selectedDate" name="SelectedDate"
+                                   value="@Model.SelectedDate.ToString("yyyy-MM-dd")"
+                                   class="form-control" required />
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100">Controleer beschikbaarheid</button>
+                    </form>
+
+                    @if (Model.Animals != null && Model.Animals.Any())
+                    {
+                        <h5 class="mt-4">Beschikbare dieren:</h5>
+                        <form method="post" asp-action="BookAnimal">
+                            <div class="row">
+                                @for (int i = 0; i < Model.Animals.Count; i++)
+                                {
+                                    <div class="col-6 col-md-4 col-lg-3 mb-4">
+                                        <div class="card text-center">
+                                            <img src="@Model.Animals[i].Image"
+                                                 class="card-img-top img-fluid"
+                                                 alt="@Model.Animals[i].Name" />
+                                            <div class="card-body">
+                                                <h6 class="card-title">@Model.Animals[i].Name</h6>
+                                                <p class="card-text">€@Model.Animals[i].Price</p>
+                                                <div class="form-check">
+                                                    <input type="checkbox"
+                                                           id="animal-@i"
+                                                           name="SelectedAnimalIds"
+                                                           value="@Model.Animals[i].Id"
+                                                           class="form-check-input" />
+                                                    <label for="animal-@i" class="form-check-label">Selecteer</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                            <input type="hidden" name="SelectedDate"
+                                   value="@Model.SelectedDate.ToString("yyyy-MM-dd")" />
+                            <button type="submit" class="btn btn-success w-100">Boek geselecteerde dieren</button>
+                        </form>
+                    }
+                    else
+                    {
+                        <p class="text-muted">Geen dieren beschikbaar voor de geselecteerde datum.</p>
+                    }
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="card">
+                <div class="card-header bg-secondary text-white">
+                    <h5>Boeking</h5>
+                </div>
+                <div class="card-body">
+                    <p><strong>Datum:</strong> @Model.SelectedDate.ToString("dd/MM/yyyy HH:mm:ss")</p>
+
+                    <h6>Beestjes</h6>
+                    <ul class="list-group">
+                        <li class="list-group-item text-muted">Nog geen beestjes geselecteerd</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

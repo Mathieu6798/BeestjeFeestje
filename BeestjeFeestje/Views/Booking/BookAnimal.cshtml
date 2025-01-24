@@ -1,0 +1,96 @@
+﻿@using Newtonsoft.Json
+@model BookingViewModel
+@{
+    ViewData["Title"] = "Contactinfo";
+}
+
+<div class="container mt-4">
+    <div class="row mb-4">
+        <div class="col">
+            <nav>
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item">Beestjes</li>
+                    <li class="breadcrumb-item active">Gegevens</li>
+                    <li class="breadcrumb-item">Bevestig</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h4>Vul je contactgegevens in</h4>
+                </div>
+                <div class="card-body">
+                    <div class="mb-4 text-center">
+                        <h5>Heb je een account?</h5>
+                        <form asp-action="Login" method="post" class="d-inline-block">
+                            <input type="hidden" name="Animals" value='@Html.Raw(JsonConvert.SerializeObject(Model.Animals))' />
+                            <input type="hidden" name="SelectedDate" value="@Model.SelectedDate.ToString("yyyy-MM-dd")" />
+                            <button type="submit" class="btn btn-secondary">Inloggen</button>
+                        </form>
+                    </div>
+
+                    <form asp-action="Create" method="post" class="needs-validation">
+                        @Html.AntiForgeryToken()
+                        <div class="mb-3">
+                            <label asp-for="@Model.Guest.Name" class="form-label">Voornaam</label>
+                            <input asp-for="@Model.Guest.Name" class="form-control" required />
+                            <span asp-validation-for="@Model.Guest.Name" class="text-danger"></span>
+                        </div>
+                        <div class="mb-3">
+                            <label asp-for="@Model.Guest.Address" class="form-label">Adres</label>
+                            <input asp-for="@Model.Guest.Address" class="form-control" required />
+                            <span asp-validation-for="@Model.Guest.Address" class="text-danger"></span>
+                        </div>
+                        <div class="mb-3">
+                            <label asp-for="@Model.Guest.Email" class="form-label">Email</label>
+                            <input asp-for="@Model.Guest.Email" class="form-control" required />
+                            <span asp-validation-for="@Model.Guest.Email" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="@Model.Guest.PhoneNumber" class="form-label">PhoneNumber</label>
+                            <input asp-for="@Model.Guest.PhoneNumber" class="form-control" required>
+                        </div>
+                        <div class="text-center mt-4">
+                            <input type="hidden" name="Animals" value='@Html.Raw(JsonConvert.SerializeObject(Model.Animals))' />
+                            <input type="hidden" name="SelectedDate" value="@Model.SelectedDate.ToString("yyyy-MM-dd")" />
+                            <button type="submit" class="btn btn-primary w-100">Ga door naar stap 4</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="card">
+                <div class="card-header bg-secondary text-white">
+                    <h5>Boeking</h5>
+                </div>
+                <div class="card-body">
+                    <p><strong>Datum:</strong> @Model.SelectedDate.ToString("dd/MM/yyyy HH:mm:ss")</p>
+
+                    <h6>Beestjes</h6>
+                    <ul class="list-group">
+                        @if (Model.Animals != null && Model.Animals.Any())
+                        {
+                            @foreach (var animal in Model.Animals)
+                            {
+                                <li class="list-group-item">
+                                    <img src="@animal.Image" alt="@animal.Name" class="img-thumbnail me-2" style="width: 30px; height: 30px;" />
+                                    @animal.Name
+                                </li>
+                            }
+                        }
+                        else
+                        {
+                            <li class="list-group-item text-muted">Geen beestjes geselecteerd</li>
+                        }
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

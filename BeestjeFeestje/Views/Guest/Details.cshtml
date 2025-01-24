@@ -1,0 +1,22 @@
+﻿@model MyDomain.Guest.IGuestVM
+@{
+    ViewData["Title"] = "Details of Guest";
+}
+
+<div class="container my-4">
+    <div class="card shadow">
+        <div class="card-header bg-primary text-white text-center">
+            <h2>@ViewData["Title"]</h2>
+        </div>
+        <div class="card-body">
+            <p><strong>Name:</strong> @Model.Name</p>
+            <p><strong>Address:</strong> @Model.Address</p>
+            <p><strong>Email:</strong> @Model.Email</p>
+            <p><strong>PhoneNumber:</strong> @Model.PhoneNumber</p>
+            <p><strong>CustomerCard:</strong> @Model.CustomerCard</p>
+        </div>
+        <div class="card-footer text-center">
+            <button class="btn btn-secondary" onclick="location.href='@Url.Action("Index", "Guest")'">Back to List</button>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,77 @@
+﻿@model MyDomain.Guest.GuestVM
+@{
+    ViewData["Title"] = "Create Guest";
+}
+
+<div class="container my-4">
+    <div class="card shadow">
+        <div class="card-header bg-success text-white text-center">
+            <h2>@ViewData["Title"]</h2>
+        </div>
+        <div class="card-body">
+            @if (TempData["SuccessMessage"] != null)
+            {
+                <div class="alert alert-success text-center" role="alert">
+                    @TempData["SuccessMessage"]
+                </div>
+            }
+            @if (TempData["ErrorMessage"] != null)
+            {
+                <div class="alert alert-danger text-center" role="alert">
+                    @TempData["ErrorMessage"]
+                </div>
+            }
+            @if (TempData["Password"] != null)
+            {
+                <div class="alert alert-success text-center" role="alert">
+                    @TempData["Password"]
+                </div>
+            }
+            <form asp-action="Create" method="post">
+                @Html.AntiForgeryToken()
+                <div class="form-group">
+                    <label asp-for="Name" class="form-label">Name</label>
+                    <input asp-for="Name" class="form-control" required>
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Address" class="form-label">Address</label>
+                    <input asp-for="Address" class="form-control" required>
+                    <span asp-validation-for="Address" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Email" class="form-label">Email</label>
+                    <input asp-for="Email" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label asp-for="PhoneNumber" class="form-label">PhoneNumber</label>
+                    <input asp-for="PhoneNumber" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label for="itemList">Selecteer een Customer Card:</label>
+                    <select id="itemList" name="CustomerCard" class="form-control">
+                        @for (int i = 0; i < Model.CustomerCardOptions.Count; i++)
+                        {
+                            if (Model.CustomerCardOptions[i] == Model.CustomerCard)
+                            {
+                                <option value="@Model.CustomerCardOptions[i]" selected>@Model.CustomerCardOptions[i]</option>
+                            }
+                            else
+                            {
+                                <option value="@Model.CustomerCardOptions[i]">@Model.CustomerCardOptions[i]</option>
+                            }
+                        })
+                    </select>
+                </div>
+                <div class="text-center mt-4">
+                    <button type="submit" class="btn btn-primary">Add Guest</button>
+                    <button type="button" class="btn btn-secondary" onclick="location.href='@Url.Action("Index", "Guest")'">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @Html.Partial("_ValidationScriptsPartial")
+}

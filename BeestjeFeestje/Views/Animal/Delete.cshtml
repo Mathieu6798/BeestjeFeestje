@@ -1,0 +1,28 @@
+﻿@model MyDomain.Animal
+@{
+    ViewData["Title"] = "Delete Animal";
+}
+
+<div class="container my-4">
+    <div class="card shadow">
+        <div class="card-header bg-danger text-white text-center">
+            <h2>@ViewData["Title"]</h2>
+        </div>
+        <div class="card-body text-center">
+            <p class="lead">Are you sure you want to delete this animal?</p>
+            <p>
+                <strong>Name:</strong> @Model.Name <br />
+                <strong>Type:</strong> @Model.Type <br />
+                <strong>Price:</strong> $@Model.Price
+            </p>
+        </div>
+        <div class="card-footer text-center">
+            <form asp-action="Delete" method="post" class="d-inline">
+                @Html.AntiForgeryToken()
+                <input type="hidden" asp-for="Id" />
+                <button type="submit" class="btn btn-danger">Yes, Delete</button>
+            </form>
+            <a class="btn btn-secondary" href="@Url.Action("Index", "Animal")">No, Cancel</a>
+        </div>
+    </div>
+</div>

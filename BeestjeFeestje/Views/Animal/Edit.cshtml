@@ -1,0 +1,51 @@
+﻿@model MyDomain.Animal
+@{
+    ViewData["Title"] = "Edit Animal";
+}
+
+<div class="container my-4">
+    <div class="card shadow">
+        <div class="card-header bg-warning text-white text-center">
+            <h2>@ViewData["Title"]</h2>
+        </div>
+        <div class="card-body">
+            <form asp-action="Edit" method="post">
+                @Html.AntiForgeryToken()
+                <input type="hidden" asp-for="Id" />
+
+                <div class="form-group">
+                    <label asp-for="Name" class="form-label">Name</label>
+                    <input asp-for="Name" class="form-control" required />
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Type" class="form-label">Type</label>
+                    <input asp-for="Type" class="form-control" required />
+                    <span asp-validation-for="Type" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Price" class="form-label">Price</label>
+                    <input asp-for="Price" class="form-control" type="number" step="0.01" required />
+                    <span asp-validation-for="Price" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Image" class="form-label">Image URL</label>
+                    <input asp-for="Image" class="form-control" type="url" required />
+                    <span asp-validation-for="Image" class="text-danger"></span>
+                </div>
+
+                <div class="text-center mt-4">
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                    <button type="button" class="btn btn-secondary" onclick="location.href='@Url.Action("Index", "Animal")'">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @Html.Partial("_ValidationScriptsPartial")
+}
