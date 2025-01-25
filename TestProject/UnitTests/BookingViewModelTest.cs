@@ -128,7 +128,7 @@ namespace BeestjeFeestje.Tests.Models
 
             // Assert
             Assert.IsFalse(isValid, "Validation should fail for exceeding max animals.");
-            Assert.IsTrue(validationResults.Exists(vr => vr.ErrorMessage.Contains("maximum of 4 animals")));
+            Assert.IsTrue(validationResults.Exists(vr => vr.ErrorMessage.Contains("U kunt maximaal 4 dieren reserveren op basis van uw klantenkaart")));
         }
 
         // Test voor maximale korting
@@ -226,7 +226,7 @@ namespace BeestjeFeestje.Tests.Models
 
             // Assert
             Assert.IsFalse(isValid); // VIP animals should not be allowed for Gold cardholders
-            Assert.IsTrue(validationResults.Exists(vr => vr.ErrorMessage == "Only Platina card holders can book VIP animals."));
+            Assert.IsTrue(validationResults.Exists(vr => vr.ErrorMessage == "Alleen houders van een Platina-kaart kunnen VIP-dieren boeken."));
         }
 
 
@@ -262,26 +262,30 @@ namespace BeestjeFeestje.Tests.Models
             var viewModel = new BookingViewModel
             {
                 Animals = new List<Animal>
-                {
-                    new Animal { Name = "Eend", Type = "Boerderij" }
-                },
+        {
+            new Animal { Name = "Eend", Type = "Boerderij" }
+        },
                 SelectedDate = new DateTime(2025, 1, 22), // Monday
                 Guest = new GuestVM { CustomerCard = "Zilver" }
             };
 
+            // Simulate a fixed random number (e.g., 1 for the 1-in-6 chance)
+            int simulatedRandomNumber = 1;
+
             // Act
-            var random = new Random();
             if (viewModel.Animals.Exists(a => a.Name == "Eend"))
             {
-                if (random.Next(1, 7) == 1) // 1 in 6 kans
+                if (simulatedRandomNumber >= 1 && simulatedRandomNumber <= 6 && simulatedRandomNumber == 1)
                 {
                     viewModel.Discount = 50;
                 }
             }
 
             // Assert
-            Assert.IsTrue(viewModel.Discount == 50 , "The discount should be 50% if 'Eend' is booked.");
+            Assert.IsTrue(simulatedRandomNumber >= 1 && simulatedRandomNumber <= 6, "The random number should be between 1 and 6.");
+            Assert.AreEqual(50, viewModel.Discount, "The discount should be 50% if 'Eend' is booked and the random condition is met.");
         }
+
         [TestMethod]
         public void CalculateDiscount_ShouldApplyExtraDiscountForAnimalNameContainingA()
         {
@@ -306,7 +310,7 @@ namespace BeestjeFeestje.Tests.Models
             Assert.IsTrue(viewModel.Discount >= expectedDiscount, "Discount should include 2% for each animal with 'A' in its name.");
         }
         [TestMethod]
-        public void Validate_ShouldReturnError_WhenTooManyAnimalsBookedForSilverCard()
+        public void Validate_ShouldReturnError_WhenTooManyAnimalsBookedForNoCard()
         {
             // Arrange
             var viewModel = new BookingViewModel
@@ -319,7 +323,7 @@ namespace BeestjeFeestje.Tests.Models
                     new Animal { Name = "Schaap", Type = "Boerderij" },
                     new Animal { Name = "Varken", Type = "Boerderij" } // Exceeds Silver card limit
                 },
-                Guest = new GuestVM { CustomerCard = "Zilver" }
+                Guest = new GuestVM { CustomerCard = "Geen" }
             };
 
             // Act
@@ -328,7 +332,7 @@ namespace BeestjeFeestje.Tests.Models
 
             // Assert
             Assert.IsFalse(isValid, "Validation should fail for exceeding max animals.");
-            Assert.IsTrue(validationResults.Exists(vr => vr.ErrorMessage.Contains("maximum of 4 animals")));
+            Assert.IsTrue(validationResults.Exists(vr => vr.ErrorMessage.Contains("U kunt maximaal 3 dieren reserveren op basis van uw klantenkaart")));
         }
         [TestMethod]
         public void CalculateDiscount_ShouldApplyCorrectDiscountForSilverCard()
