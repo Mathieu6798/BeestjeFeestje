@@ -53,12 +53,13 @@ namespace BeestjeFeestje.Models
             }
 
             // Rule: Maximum animals allowed for a customer card
-            int maxAnimals = 3;
+            int maxAnimals = 10;
             if (Guest != null)
             {
                 if (Guest.CustomerCard == "Zilver") maxAnimals = 4;
                 else if (Guest.CustomerCard == "Goud") maxAnimals = int.MaxValue;
                 else if (Guest.CustomerCard == "Platina") maxAnimals = int.MaxValue;
+                else if (Guest.CustomerCard == "Geen" || Guest.CustomerCard == null) maxAnimals = 3;
                 if (Guest.CustomerCard != "Platina" &&
                     Animals.Any(a => a.Type == "VIP"))
                 {

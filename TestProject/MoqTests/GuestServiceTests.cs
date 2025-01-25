@@ -78,6 +78,9 @@ namespace TestProject.MoqTests
             var mockGuestVM = new Mock<IGuestVM>();
             mockGuestVM.SetupGet(m => m.Name).Returns("Test Guest");
             mockGuestVM.SetupGet(m => m.Email).Returns("guest@example.com");
+            mockGuestVM.SetupGet(m => m.PhoneNumber).Returns("1234567890");
+            mockGuestVM.SetupGet(m => m.Address).Returns("123 Test St.");
+            mockGuestVM.SetupGet(m => m.CustomerCard).Returns("Zilver");
 
             _userManagerMock
                 .Setup(um => um.CreateAsync(It.IsAny<ApplicationUser>(), It.IsAny<string>()))
