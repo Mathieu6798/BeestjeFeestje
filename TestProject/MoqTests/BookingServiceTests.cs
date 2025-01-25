@@ -340,5 +340,104 @@ namespace TestProject.MoqTests
             Assert.AreEqual(1, addedBooking.BookingAnimals.ToList()[0].AnimalId);
             Assert.AreEqual(2, addedBooking.BookingAnimals.ToList()[1].AnimalId);
         }
+
+
+        [TestMethod]
+        public async Task GetAllBookingsAsync_Should_ReturnAllBookings()
+        {
+            // Arrange
+            var bookings = new List<Booking>
+            {
+                new Booking { Id = 1, BookedDate = DateTime.Today },
+                new Booking { Id = 2, BookedDate = DateTime.Today.AddDays(1) }
+            }.AsQueryable();
+
+            var mockBookingDbSet = new Mock<DbSet<Booking>>();
+            mockBookingDbSet.As<IQueryable<Booking>>().Setup(m => m.Provider).Returns(bookings.Provider);
+            mockBookingDbSet.As<IQueryable<Booking>>().Setup(m => m.Expression).Returns(bookings.Expression);
+            mockBookingDbSet.As<IQueryable<Booking>>().Setup(m => m.ElementType).Returns(bookings.ElementType);
+            mockBookingDbSet.As<IQueryable<Booking>>().Setup(m => m.GetEnumerator()).Returns(bookings.GetEnumerator());
+
+            _mockDbContext.Setup(c => c.Bookings).Returns(mockBookingDbSet.Object);
+
+            // Act
+            var result = await _bookingService.GetAllBookingsAsync();
+
+            // Assert
+            Assert.IsNotNull(result);
+            Assert.AreEqual(2, result.Count());
+            Assert.AreEqual(1, result.First().Id);
+        }
+
+        [TestMethod]
+        public async Task GetBookingByIdAsync_Should_ReturnBooking_WhenIdExists()
+        {
+            // Arrange
+            var bookingId = 1;
+            var animals = new List<Animal>
+                {
+                    new Animal { Id = 1, Name = "Animal1" },
+                    new Animal { Id = 2, Name = "Animal2" }
+                };
+
+                        var bookings = new List<Booking>
+                {
+                    new Booking
+                    {
+                        Id = bookingId,
+                        BookedDate = DateTime.Today,
+                        BookingAnimals = new List<BookingAnimal>
+                        {
+                            new BookingAnimal { Animal = animals[0] },
+                            new BookingAnimal { Animal = animals[1] }
+                        }
+                    }
+                }.AsQueryable();
+
+            var mockBookingDbSet = new Mock<DbSet<Booking>>();
+            mockBookingDbSet.As<IQueryable<Booking>>().Setup(m => m.Provider).Returns(bookings.Provider);
+            mockBookingDbSet.As<IQueryable<Booking>>().Setup(m => m.Expression).Returns(bookings.Expression);
+            mockBookingDbSet.As<IQueryable<Booking>>().Setup(m => m.ElementType).Returns(bookings.ElementType);
+            mockBookingDbSet.As<IQueryable<Booking>>().Setup(m => m.GetEnumerator()).Returns(bookings.GetEnumerator());
+
+            _mockDbContext.Setup(c => c.Bookings).Returns(mockBookingDbSet.Object);
+
+            // Act
+            var result = await _bookingService.GetBookingByIdAsync(bookingId);
+
+            // Assert
+            Assert.IsNotNull(result);
+            Assert.AreEqual(bookingId, result.Id);
+            Assert.AreEqual(2, result.BookingAnimals.Count);
+            Assert.AreEqual("Animal1", result.BookingAnimals.First().Animal.Name);
+        }
+
+
+        [TestMethod]
+        public async Task DeleteBookingByIdAsync_Should_DeleteBooking_WhenIdExists()
+        {
+            // Arrange
+            var booking = new Booking { Id = 1 };
+            var bookings = new List<Booking> { booking }.AsQueryable();
+
+            var mockBookingDbSet = new Mock<DbSet<Booking>>();
+            mockBookingDbSet.As<IQueryable<Booking>>().Setup(m => m.Provider).Returns(bookings.Provider);
+            mockBookingDbSet.As<IQueryable<Booking>>().Setup(m => m.Expression).Returns(bookings.Expression);
+            mockBookingDbSet.As<IQueryable<Booking>>().Setup(m => m.ElementType).Returns(bookings.ElementType);
+            mockBookingDbSet.As<IQueryable<Booking>>().Setup(m => m.GetEnumerator()).Returns(bookings.GetEnumerator());
+
+            mockBookingDbSet.Setup(m => m.FindAsync(It.IsAny<object[]>())).ReturnsAsync(booking);
+            mockBookingDbSet.Setup(m => m.Remove(It.IsAny<Booking>()));
+
+            _mockDbContext.Setup(c => c.Bookings).Returns(mockBookingDbSet.Object);
+
+            // Act
+            await _bookingService.DeleteBookingByIdAsync(1);
+
+            // Assert
+            mockBookingDbSet.Verify(m => m.FindAsync(It.Is<object[]>(ids => (int)ids[0] == 1)), Times.Once);
+            mockBookingDbSet.Verify(m => m.Remove(It.Is<Booking>(b => b.Id == 1)), Times.Once);
+            _mockDbContext.Verify(c => c.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
+        }
     }
 }

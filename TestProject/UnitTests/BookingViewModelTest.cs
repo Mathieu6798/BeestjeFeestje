@@ -18,10 +18,10 @@ namespace BeestjeFeestje.Tests.Models
             var viewModel = new BookingViewModel
             {
                 Animals = new List<Animal>
-        {
-            new Animal { Name = "Leeuw", Type = "Wild" },
-            new Animal { Name = "Koe", Type = "Boerderij" }
-        },
+                {
+                    new Animal { Name = "Leeuw", Type = "Wild" },
+                    new Animal { Name = "Koe", Type = "Boerderij" }
+                },
                 SelectedDate = DateTime.Now
             };
 
@@ -312,13 +312,13 @@ namespace BeestjeFeestje.Tests.Models
             var viewModel = new BookingViewModel
             {
                 Animals = new List<Animal>
-        {
-            new Animal { Name = "Koe", Type = "Boerderij" },
-            new Animal { Name = "Eend", Type = "Boerderij" },
-            new Animal { Name = "Kip", Type = "Boerderij" },
-            new Animal { Name = "Schaap", Type = "Boerderij" },
-            new Animal { Name = "Varken", Type = "Boerderij" } // Exceeds Silver card limit
-        },
+                {
+                    new Animal { Name = "Koe", Type = "Boerderij" },
+                    new Animal { Name = "Eend", Type = "Boerderij" },
+                    new Animal { Name = "Kip", Type = "Boerderij" },
+                    new Animal { Name = "Schaap", Type = "Boerderij" },
+                    new Animal { Name = "Varken", Type = "Boerderij" } // Exceeds Silver card limit
+                },
                 Guest = new GuestVM { CustomerCard = "Zilver" }
             };
 
@@ -337,11 +337,11 @@ namespace BeestjeFeestje.Tests.Models
             var viewModel = new BookingViewModel
             {
                 Animals = new List<Animal>
-        {
-            new Animal { Name = "Eend", Type = "Wild" },
-            new Animal { Name = "Koe", Type = "Boerderij" },
-            new Animal { Name = "Pinguïn", Type = "Sneeuw" }
-        },
+                {
+                    new Animal { Name = "Eend", Type = "Wild" },
+                    new Animal { Name = "Koe", Type = "Boerderij" },
+                    new Animal { Name = "Pinguïn", Type = "Sneeuw" }
+                },
                 SelectedDate = new DateTime(2025, 1, 22), // Monday
                 Guest = new GuestVM { CustomerCard = "Zilver" }
             };
