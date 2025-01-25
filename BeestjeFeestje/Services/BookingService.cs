@@ -90,6 +90,10 @@ namespace BeestjeFeestje.Services
 
             return await Task.FromResult(model);
         }
+        public void DeleteBookingAsync(HttpContext context)
+        {
+            context.Session.Remove("BookingSession");
+        }
 
         public async Task<bool> AddBookingAsync(BookingViewModel model, string animals, HttpContext context)
         {

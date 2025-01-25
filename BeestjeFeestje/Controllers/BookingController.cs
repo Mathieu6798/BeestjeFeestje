@@ -1,6 +1,7 @@
 ﻿using BeestjeFeestje.Models;
 using BeestjeFeestje.Services;
 using Microsoft.AspNetCore.Mvc;
+using MyDomain;
 
 namespace BeestjeFeestje.Controllers
 {
@@ -60,6 +61,7 @@ namespace BeestjeFeestje.Controllers
         {
             var model = await _bookingService.GetBookingFromSessionAsync(HttpContext);
             model?.CalculateDiscount();
+            _bookingService.DeleteBookingAsync(HttpContext);
             return View(model);
         }
 

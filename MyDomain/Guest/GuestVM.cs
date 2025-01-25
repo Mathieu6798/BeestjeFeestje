@@ -28,7 +28,7 @@ namespace MyDomain.Guest
 
         [Display(Name = "CustomerCard")]
         public string? CustomerCard { get; set; }
-        private List<string> customerCardOptions = new List<string> { "Zilver", "Goud", "Platina" };
+        private List<string> customerCardOptions = new List<string> { "Geen", "Zilver", "Goud", "Platina" };
         public List<string> CustomerCardOptions
         {
             get { return customerCardOptions; }

@@ -24,7 +24,7 @@ namespace BeestjeFeestje.Services
                 PhoneNumber = model.PhoneNumber,
                 Address = model.Address,
                 CustomerCard = model.CustomerCard,
-                UserName = model.Name
+                UserName = model.Address.Replace(" ", "_")
             };
 
             var password = GeneratePassword();
