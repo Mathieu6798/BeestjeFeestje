@@ -11,5 +11,10 @@ namespace BeestjeFeestje.Services
         void DeleteBookingAsync(HttpContext context);
         Task<BookingViewModel> GetBookingFromSessionAsync(HttpContext context);
         Task<bool> AddBookingAsync(BookingViewModel model, string animals, HttpContext context);
+        Task<List<Booking>> GetAllBookingsAsync();
+        Task<Booking> GetBookingByIdAsync(int id);
+        Task<bool> DeleteBookingByIdAsync(int id);
+        Task<List<ContactInformation>> GetContactPerBooking(int bookingId);
+        Task<ApplicationUser> GetUserForBooking(string userId);
     }
 }

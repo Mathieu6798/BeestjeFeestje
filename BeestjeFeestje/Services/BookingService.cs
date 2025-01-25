@@ -127,5 +127,42 @@ namespace BeestjeFeestje.Services
             await _context.SaveChangesAsync();
             return true;
         }
+
+        public async Task<List<Booking>> GetAllBookingsAsync()
+        {
+            return _context.Bookings.ToList();
+        }
+
+        public async Task<Booking> GetBookingByIdAsync(int id)
+        {
+            return await _context.Bookings
+                .Include(b => b.BookingAnimals)
+                .ThenInclude(ba => ba.Animal)
+                .FirstOrDefaultAsync(b => b.Id == id);
+        }
+
+        public async Task<bool> DeleteBookingByIdAsync(int id)
+        {
+            var booking = await _context.Bookings.FirstOrDefaultAsync(b => b.Id == id);
+            if (booking == null)
+            {
+                return false;
+            }
+
+            _context.Bookings.Remove(booking);
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
+        public async Task<List<ContactInformation>> GetContactPerBooking(int bookingId)
+        {
+            return _context.Contacts.Where(c => c.BookingId == bookingId).ToList();
+        }
+
+        public async Task<ApplicationUser> GetUserForBooking(string userId)
+        {
+            return await _context.Users.FirstOrDefaultAsync(u => u.Id == userId);
+        }
+
     }
 }

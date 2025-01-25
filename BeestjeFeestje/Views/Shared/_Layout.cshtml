@@ -31,10 +31,13 @@
                             if (User.IsInRole("Admin"))
                             {
                                 <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-area="" asp-controller="Animal" asp-action="Index">Overview Animals</a>
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Animal" asp-action="Index">Overzicht Dieren</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-area="" asp-controller="Guest" asp-action="Index">Overview Guests</a>
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Guest" asp-action="Index">Overzicht Gasten</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Booking" asp-action="BookingsList">Overzicht Boekingen</a>
                                 </li>
                             }
                             <li class="nav-item">

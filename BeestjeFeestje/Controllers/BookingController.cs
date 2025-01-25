@@ -75,14 +75,6 @@ namespace BeestjeFeestje.Controllers
             var model = await _bookingService.GetBookingFromSessionAsync(HttpContext);
             model?.CalculateDiscount();
             _bookingService.DeleteBookingAsync(HttpContext);
-
-            if(model.Guest.CustomerCard == "null")
-            {
-
-            }
-
-
-
             return View(model);
         }
 
@@ -97,6 +89,75 @@ namespace BeestjeFeestje.Controllers
             }
             TempData["ErrorMessage"] = "Failed to add booking.";
             return RedirectToAction(nameof(Overview));
+        }
+
+        public async Task<IActionResult> BookingsList()
+        {
+            var bookings = await _bookingService.GetAllBookingsAsync();
+            foreach (var booking in bookings)
+            {
+                var contact = await _bookingService.GetContactPerBooking(booking.Id);
+                booking.ContactInformation = contact.FirstOrDefault();
+            }
+            return View(bookings);
+        }
+
+        public async Task<IActionResult> Details(int id)
+        {
+            var booking = await _bookingService.GetBookingByIdAsync(id);
+
+            var contact = await _bookingService.GetContactPerBooking(booking.Id);
+
+
+            if (contact != null)
+            {
+                booking.ContactInformation = contact.FirstOrDefault();
+            }
+            else if (booking.UserId != null)
+            {
+                booking.User = await _bookingService.GetUserForBooking(booking.UserId);
+            }
+            else if (booking.UserId == null && booking.ContactInformation == null)
+            {
+                TempData["ErrorMessage"] = "No contact information or user found for this booking.";
+                return RedirectToAction(nameof(BookingsList));
+            }
+
+            if (booking == null) return NotFound();
+            return View(booking);
+        }
+
+        public async Task<IActionResult> Delete(int id)
+        {
+            var booking = await _bookingService.GetBookingByIdAsync(id);
+
+            var contact = await _bookingService.GetContactPerBooking(booking.Id);
+
+
+            if (contact != null)
+            {
+                booking.ContactInformation = contact.FirstOrDefault();
+            }
+            else if (booking.UserId != null)
+            {
+                booking.User = await _bookingService.GetUserForBooking(booking.UserId);
+            }
+            else if (booking.UserId == null && booking.ContactInformation == null)
+            {
+                TempData["ErrorMessage"] = "No contact information or user found for this booking.";
+                return RedirectToAction(nameof(BookingsList));
+            }
+
+            if (booking == null) return NotFound();
+            return View(booking);
+        }
+
+        [HttpPost, ActionName("DeleteConfirmed")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(int id)
+        {
+            await _bookingService.DeleteBookingByIdAsync(id);
+            return RedirectToAction(nameof(BookingsList));
         }
     }
 }

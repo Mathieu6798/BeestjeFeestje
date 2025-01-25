@@ -64,7 +64,7 @@ namespace BeestjeFeestje.Models
                     Animals.Any(a => a.Type == "VIP"))
                 {
                     yield return new ValidationResult(
-                        "Only Platina card holders can book VIP animals.",
+                        "Alleen houders van een Platina-kaart kunnen VIP-dieren boeken.",
                         new[] { nameof(Animals), nameof(Guest.CustomerCard) });
                 }
             }
@@ -72,7 +72,7 @@ namespace BeestjeFeestje.Models
             if (Animals.Count > maxAnimals)
             {
                 yield return new ValidationResult(
-                    $"You can book a maximum of {maxAnimals} animals based on your customer card.",
+                    $"U kunt maximaal {maxAnimals} dieren reserveren op basis van uw klantenkaart. ",
                     new[] { nameof(Animals), nameof(Guest.CustomerCard) });
             }
         }

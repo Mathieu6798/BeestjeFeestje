@@ -1,0 +1,29 @@
+﻿@model MyDomain.Booking
+@{
+    ViewData["Title"] = "Booking Details";
+}
+
+<div class="container my-4">
+    <div class="card shadow">
+        <div class="card-header bg-primary text-white text-center">
+            <h2>@ViewData["Title"]</h2>
+        </div>
+        <div class="card-body">
+            <p><strong>Booked Date:</strong> @Model.BookedDate.ToShortDateString()</p>
+            <p><strong>Guest Name:</strong> @(Model.ContactInformation == null ? Model.User.Name : Model.ContactInformation.Name)</p>
+            <p><strong>Email:</strong> @(Model.ContactInformation == null ? Model.User.Email : Model.ContactInformation.Email)</p>
+            <p><strong>Phone Number:</strong> @(Model.ContactInformation == null ? Model.User.PhoneNumber : Model.ContactInformation.PhoneNumber)</p>
+            <p><strong>Address:</strong> @(Model.ContactInformation == null ? Model.User.Address : Model.ContactInformation.Address)</p>
+            <p><strong>Animals Booked:</strong></p>
+            <ul>
+                @foreach (var animal in Model.BookingAnimals)
+                {
+                    <li>@animal.Animal.Name</li>
+                }
+            </ul>
+        </div>
+        <div class="card-footer text-center">
+            <button class="btn btn-secondary" onclick="location.href='@Url.Action("BookingsList", "Booking")'">Back to List</button>
+        </div>
+    </div>
+</div>
