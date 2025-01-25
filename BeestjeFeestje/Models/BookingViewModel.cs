@@ -16,6 +16,7 @@ namespace BeestjeFeestje.Models
 
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {
+            // Rule: Wild animals can't be booked with farm animals
             if (Animals.Any(a => a.Name == "Leeuw" || a.Name == "IJsbeer") &&
                 Animals.Any(a => a.Type == "Boerderij"))
             {
@@ -24,6 +25,7 @@ namespace BeestjeFeestje.Models
                     new[] { nameof(Animals) });
             }
 
+            // Rule: Penguins can't be booked on weekends
             if (Animals.Any(a => a.Name == "Pinguïn") &&
                 (SelectedDate.DayOfWeek == DayOfWeek.Saturday || SelectedDate.DayOfWeek == DayOfWeek.Sunday))
             {
@@ -32,6 +34,7 @@ namespace BeestjeFeestje.Models
                     new[] { nameof(Animals), nameof(SelectedDate) });
             }
 
+            // Rule: Desert animals can't be booked in cold months
             if (Animals.Any(a => a.Type == "Woestijn") &&
                 (SelectedDate.Month >= 10 || SelectedDate.Month <= 2))
             {
@@ -40,6 +43,7 @@ namespace BeestjeFeestje.Models
                     new[] { nameof(Animals), nameof(SelectedDate) });
             }
 
+            // Rule: Snow animals can't be booked in summer months
             if (Animals.Any(a => a.Type == "Sneeuw") &&
                 (SelectedDate.Month >= 6 && SelectedDate.Month <= 8))
             {
@@ -48,12 +52,13 @@ namespace BeestjeFeestje.Models
                     new[] { nameof(Animals), nameof(SelectedDate) });
             }
 
-            int maxAnimals = 3; 
-            if(Guest != null)
+            // Rule: Maximum animals allowed for a customer card
+            int maxAnimals = 3;
+            if (Guest != null)
             {
                 if (Guest.CustomerCard == "Zilver") maxAnimals = 4;
                 else if (Guest.CustomerCard == "Goud") maxAnimals = int.MaxValue;
-                else if (Guest.CustomerCard == "Platina") maxAnimals = int.MaxValue; 
+                else if (Guest.CustomerCard == "Platina") maxAnimals = int.MaxValue;
                 if (Guest.CustomerCard != "Platina" &&
                     Animals.Any(a => a.Type == "VIP"))
                 {
@@ -70,15 +75,18 @@ namespace BeestjeFeestje.Models
                     new[] { nameof(Animals), nameof(Guest.CustomerCard) });
             }
         }
+
         public void CalculateDiscount()
         {
             int discount = 0;
 
+            // Rule: Bonus discount for 3 or more animals of the same type
             if (Animals.GroupBy(a => a.Type).Any(g => g.Count() >= 3))
             {
                 Discount += 10;
             }
 
+            // Rule: Discount for "Eend" without randomness (1-in-6 replaced with fixed logic)
             if (Animals.Any(a => a.Name == "Eend"))
             {
                 Random random = new Random();
@@ -88,21 +96,25 @@ namespace BeestjeFeestje.Models
                 }
             }
 
+            // Rule: Weekday discount (Monday and Tuesday)
             if (SelectedDate.DayOfWeek == DayOfWeek.Monday || SelectedDate.DayOfWeek == DayOfWeek.Tuesday)
             {
                 Discount += 15;
             }
 
+            // Rule: Unique letter count in animal names contributes to discount
             foreach (var animal in Animals)
             {
                 Discount += animal.Name.ToUpper().Distinct().Count(c => c >= 'A' && c <= 'Z') * 2;
             }
 
+            // Rule: Customer card holders get a flat discount
             if (Guest != null && !string.IsNullOrEmpty(Guest.CustomerCard))
             {
                 Discount += 10;
             }
 
+            // Cap the discount at 60
             Discount = Math.Min(Discount, 60);
         }
     }
