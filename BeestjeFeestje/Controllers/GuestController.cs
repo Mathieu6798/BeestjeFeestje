@@ -25,7 +25,7 @@ namespace BeestjeFeestje.Controllers
 
         public IActionResult Create()
         {
-            GuestVM guestVM = new GuestVM { CustomerCardOptions = new List<string> { new string("Zilver"), new string("Goud"), new string("Platina") } };
+            GuestVM guestVM = new GuestVM();
             return View(guestVM);
         }
 
