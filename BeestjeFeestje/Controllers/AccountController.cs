@@ -54,6 +54,7 @@ namespace BeestjeFeestje.Controllers
         public async Task<IActionResult> Logout()
         {
             await _signInManager.SignOutAsync();
+            HttpContext.Session.Remove("UserSession");
             return LocalRedirect("/Account/Login");
         }
 

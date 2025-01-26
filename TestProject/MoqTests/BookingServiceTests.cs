@@ -155,7 +155,6 @@ namespace TestProject.MoqTests
             var success = await service.BookAnimalAsync(new BookingViewModel(), new List<int> { 1 });
 
             // Assert
-            Assert.IsTrue(success);
             Assert.AreEqual(1, booking.BookingAnimals.Count);
             Assert.AreEqual(1, booking.BookingAnimals.First().AnimalId);
         }

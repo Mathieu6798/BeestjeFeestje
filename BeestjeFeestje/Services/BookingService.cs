@@ -38,16 +38,16 @@ namespace BeestjeFeestje.Services
             };
         }
 
-        public async Task<bool> BookAnimalAsync(BookingViewModel model, List<int> selectedAnimalIds)
+        public async Task<BookingViewModel> BookAnimalAsync(BookingViewModel model, List<int> selectedAnimalIds)
         {
             if (selectedAnimalIds == null || !selectedAnimalIds.Any())
             {
-                return false;
+                return model;
             }
 
             var selectedAnimals = _context.Animals.Where(a => selectedAnimalIds.Contains(a.Id)).ToList();
             model.Animals = selectedAnimals;
-            return true;
+            return model;
         }
 
         public async Task SaveBookingToSessionAsync(BookingViewModel model, string animals, HttpContext context)

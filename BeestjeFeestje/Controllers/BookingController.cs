@@ -2,6 +2,7 @@
 using BeestjeFeestje.Services;
 using Microsoft.AspNetCore.Mvc;
 using MyDomain;
+using Newtonsoft.Json;
 using System.ComponentModel.DataAnnotations;
 
 namespace BeestjeFeestje.Controllers
@@ -34,10 +35,11 @@ namespace BeestjeFeestje.Controllers
         [HttpPost]
         public async Task<IActionResult> BookAnimal(BookingViewModel model, List<int> selectedAnimalIds)
         {
-            var success = await _bookingService.BookAnimalAsync(model, selectedAnimalIds);
-            if (!success)
+            var booking = await _bookingService.BookAnimalAsync(model, selectedAnimalIds);
+            var user = HttpContext.Session.GetString("UserSession");
+            if (booking.Animals == null)
             {
-                ModelState.AddModelError("", "No animals selected.");
+                TempData["ErrorMessage"] = "No animals selected.";
                 return RedirectToAction(nameof(Index));
             }
             else if (model.Validate(new ValidationContext(model)).Any())
@@ -45,6 +47,11 @@ namespace BeestjeFeestje.Controllers
                 var validationErrors = model.Validate(new ValidationContext(model));
                 TempData["ErrorMessage"] = validationErrors.First().ErrorMessage;
                 return RedirectToAction(nameof(Index));
+            }
+            else if(user != null)
+            {
+                HttpContext.Session.SetString("BookingSession", JsonConvert.SerializeObject(booking));
+                return RedirectToAction(nameof(Overview));
             }
             TempData["SuccessMessage"] = "Animals booked successfully!";
             return View(model);
@@ -61,18 +68,18 @@ namespace BeestjeFeestje.Controllers
         public async Task<IActionResult> Create(BookingViewModel model, string animals)
         {
             await _bookingService.SaveBookingToSessionAsync(model, animals, HttpContext);
-            if (model.Validate(new ValidationContext(model)).Any())
-            {
-                var validationErrors = model.Validate(new ValidationContext(model));
-                TempData["ErrorMessage"] = validationErrors.First().ErrorMessage;
-                return RedirectToAction(nameof(Index));
-            }
             return RedirectToAction("Overview");
         }
 
         public async Task<IActionResult> Overview()
         {
             var model = await _bookingService.GetBookingFromSessionAsync(HttpContext);
+            if (model.Validate(new ValidationContext(model)).Any())
+            {
+                var validationErrors = model.Validate(new ValidationContext(model));
+                TempData["ErrorMessage"] = validationErrors.First().ErrorMessage;
+                return RedirectToAction(nameof(Index));
+            }
             model?.CalculateDiscount();
             _bookingService.DeleteBookingAsync(HttpContext);
             return View(model);
