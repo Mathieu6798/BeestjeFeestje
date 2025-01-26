@@ -17,7 +17,7 @@
             </p>
         </div>
         <div class="card-footer text-center">
-            <form asp-action="Delete" method="post" class="d-inline">
+            <form asp-action="DeleteConfirmed" method="post" class="d-inline">
                 @Html.AntiForgeryToken()
                 <input type="hidden" asp-for="Id" />
                 <button type="submit" class="btn btn-danger">Yes, Delete</button>
