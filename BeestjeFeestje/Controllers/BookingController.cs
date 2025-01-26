@@ -80,7 +80,8 @@ namespace BeestjeFeestje.Controllers
                 TempData["ErrorMessage"] = validationErrors.First().ErrorMessage;
                 return RedirectToAction(nameof(Index));
             }
-            model?.CalculateDiscount();
+            List<string> rules = model?.CalculateDiscount();
+            TempData["DiscountRules"] = rules;  
             _bookingService.DeleteBookingAsync(HttpContext);
             return View(model);
         }

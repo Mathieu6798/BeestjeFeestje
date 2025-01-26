@@ -45,8 +45,23 @@
                         @{
                             var discount = (TotalPrice * Model.Discount) / 100;
                             var newTotalPrice = TotalPrice - discount;
+                            List<string> discountRules = TempData["DiscountRules"] as List<string>;
                         }
-                        <p><strong>Korting</strong> €@discount</p>
+                        <p><strong>Korting Regels:</strong>
+                            @{
+                              if(discountRules != null)
+                              {
+                                foreach (var rule in discountRules)
+                                {
+                                    <span>@rule</span>
+                                }
+                              }
+                              else
+                              {
+                                <span> </span>
+                              } 
+                            }</p>
+                        <p><strong>Korting:</strong> €@discount</p>
                         <p><strong>Totaal:</strong> €@newTotalPrice</p>
                         <input asp-for="@Model.Guest.Name" class="form-control" hidden />
                         <input asp-for="@Model.Guest.Email" class="form-control" hidden />

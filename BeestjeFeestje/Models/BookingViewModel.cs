@@ -77,14 +77,15 @@ namespace BeestjeFeestje.Models
             }
         }
 
-        public void CalculateDiscount()
+        public List<string> CalculateDiscount()
         {
             int discount = 0;
-
+            List<string> rules = new List<string>();
             // Rule: Bonus discount for 3 or more animals of the same type
             if (Animals.GroupBy(a => a.Type).Any(g => g.Count() >= 3))
             {
                 Discount += 10;
+                rules.Add("Bonuskorting bij 3 of meer dieren van hetzelfde type.");
             }
 
             // Rule: Discount for "Eend" without randomness (1-in-6 replaced with fixed logic)
@@ -94,6 +95,7 @@ namespace BeestjeFeestje.Models
                 if (random.Next(1, 7) == 1) // 1 in 6 chance
                 {
                     Discount += 50;
+                    rules.Add("Korting voor \"Eend\" zonder willekeur (1-op-6 vervangen door vaste logica).");
                 }
             }
 
@@ -101,22 +103,26 @@ namespace BeestjeFeestje.Models
             if (SelectedDate.DayOfWeek == DayOfWeek.Monday || SelectedDate.DayOfWeek == DayOfWeek.Tuesday)
             {
                 Discount += 15;
+                rules.Add("Korting op weekdagen (maandag en dinsdag).");
             }
 
             // Rule: Unique letter count in animal names contributes to discount
             foreach (var animal in Animals)
             {
                 Discount += animal.Name.ToUpper().Distinct().Count(c => c >= 'A' && c <= 'Z') * 2;
+                rules.Add($"Unieke lettertelling in dierennamen draagt ​​bij aan korting: {animal.Name}.");
             }
 
             // Rule: Customer card holders get a flat discount
             if (Guest != null && !string.IsNullOrEmpty(Guest.CustomerCard))
             {
                 Discount += 10;
+                rules.Add("Klantenkaarthouders krijgen een vaste korting.");
             }
 
             // Cap the discount at 60
             Discount = Math.Min(Discount, 60);
+            return rules;
         }
     }
 }
